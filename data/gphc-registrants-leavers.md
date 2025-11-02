@@ -1,4 +1,3 @@
-Type of registrant,Total leaving (September 2025),Total leaving (year to date)
+profession,leavers,total_leavers
 Pharmacist,116,511
-Pharmacy,93,372
-TOTAL,209,883
+Pharmacy Technicians,93,372
