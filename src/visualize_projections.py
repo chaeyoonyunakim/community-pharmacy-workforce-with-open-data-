@@ -101,7 +101,7 @@ def create_visualizations(gap_analysis_df, baseline_source='cpws', output_dir=No
     config.plt.tight_layout()
     
     # Save figure
-    output_path = output_dir / 'workforce_projection_chart.png'
+    output_path = output_dir / 'workforce_projection.png'
     config.plt.savefig(output_path, dpi=300, bbox_inches='tight')
     
     config.plt.close('all')

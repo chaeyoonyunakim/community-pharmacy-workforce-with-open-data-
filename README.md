@@ -60,7 +60,7 @@ community-pharmacy-workforce-with-open-data/
 
 The model generates workforce projections and gap analysis visualizations:
 
-![Workforce Projection Chart](workforce_projection_chart.png) 
+![Workforce Projection Chart](workforce_projection.png) 
 
 The visualization shows 10-year supply vs operations projections with gap analysis for the selected scenario using a dual y-axis chart:
 - **Left y-axis**: 
