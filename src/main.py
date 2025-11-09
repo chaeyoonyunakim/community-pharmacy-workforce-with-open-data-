@@ -8,10 +8,11 @@ Usage:
     python main.py
 """
 
-from config import DURATION, BASELINE_YEAR
+import config
 from project_workforce import (
     load_registration_data,
     calculate_annual_growth_rates,
+    get_baseline,
     project_workforce,
     format_projections
 )
@@ -19,25 +20,30 @@ from project_workforce import (
 
 def main():
     """Main execution function."""
+    # Get CPWS data
+    baseline = get_baseline(source='cpws')
+    
+    # Calculate growth rates from GPhC historical data
     total_df = load_registration_data()
-    rates = calculate_annual_growth_rates(total_df)
+    growth_rates = calculate_annual_growth_rates(total_df)
     
     print("\n" + "="*60)
     print("Baseline and Annual Growth Rates (CAGR)")
     print("="*60)
-    print(f"Growth Rate Calculation Period: {list(rates.values())[0]['years_elapsed']} year(s) (2018-2025)")
-    print(f"Projection Period: {DURATION} years")
+    print(f"Growth Rate Calculation Period: {list(growth_rates.values())[0]['years_elapsed']} year(s) (2018-2025)")
+    print(f"Projection Period: {config.DURATION} years")
     print("Note: Annual Growth Rate = Compound Annual Growth Rate (CAGR)")
     print()
-    for profession, rate_data in rates.items():
-        print(f"{profession}:")
-        print(f"  Baseline (March {BASELINE_YEAR}): {rate_data['baseline_total']:,} registrants")
-        print(f"  CAGR (Average Annual Growth Rate): {rate_data['annual_growth_rate_pct']:.2f}%")
-        print(f"  Annual Change Estimate: {rate_data['annual_change_estimate']:,.0f} registrants/year")
+    for profession in growth_rates.keys():
+        if profession in baseline:
+            print(f"{profession}:")
+            print(f"  Baseline: {baseline[profession]:,}")
+            print(f"  CAGR (Average Annual Growth Rate): {growth_rates[profession]['annual_growth_rate_pct']:.2f}%")
+            print(f"  Annual Change Estimate: {growth_rates[profession]['annual_change_estimate']:,.0f} registrants/year")
     print("="*60 + "\n")
     
-    print(f"Creating {DURATION}-year projections...")
-    projections = project_workforce(rates)
+    print(f"Creating {config.DURATION}-year projections...")
+    projections = project_workforce(baseline, growth_rates)
     
     print("Formatting projections...")
     projections_df = format_projections(projections)

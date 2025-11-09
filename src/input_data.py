@@ -4,10 +4,8 @@ Input data loading and preprocessing functions.
 Handles reading CSV files and preprocessing data for workforce projections.
 """
 
-import pandas as pd
-from pathlib import Path
 from utils import get_data_dir
-from config import BASELINE_YEAR, BASELINE_MONTH
+from config import BASELINE_YEAR, BASELINE_MONTH, pd, sys, Path
 
 
 def load_csv(file_path, skipinitialspace=True):
@@ -145,6 +143,101 @@ def load_leavers_data(data_dir=None, filename='gphc-registrants-leavers.csv'):
     return df
 
 
+def get_baseline_from_gphc(data_dir=None, filename='gphc-total-number-of-pharmacy-registrants.csv'):
+    """
+    Extract baseline data from GPhC registrants CSV file.
+    
+    Extracts baseline values for March of the baseline year from the GPhC data.
+    Returns values in consistent format: baseline_pharmacists and baseline_technicians.
+    
+    Args:
+        data_dir: Optional data directory path. If None, uses default project structure.
+        filename: Name of the CSV file to load
+    
+    Returns:
+        dict: Dictionary with keys 'baseline_pharmacists' and 'baseline_technicians'
+    """
+    # Load registrants data filtered for baseline year and month
+    df = load_registrants_data(data_dir, filename)
+    
+    # Filter for baseline year
+    df = df[df['year'] == BASELINE_YEAR].copy()
+    
+    # Extract baseline values by profession
+    baseline_data = {}
+    for profession in df['profession'].unique():
+        profession_df = df[df['profession'] == profession]
+        if not profession_df.empty:
+            baseline_value = int(profession_df['registrants'].values[0])
+            # Map profession names to consistent variable names
+            if 'Pharmacist' in profession:
+                baseline_data['baseline_pharmacists'] = baseline_value
+            elif 'Pharmacy Technician' in profession or 'Technician' in profession:
+                baseline_data['baseline_technicians'] = baseline_value
+    
+    return baseline_data
+
+
+def get_baseline_from_cpws():
+    """
+    Load baseline data from CPWS configuration file.
+    
+    Imports baseline_pharmacists and baseline_technicians from data/cpws.py.
+    Returns values in consistent format.
+    
+    Returns:
+        dict: Dictionary with keys 'baseline_pharmacists' and 'baseline_technicians'
+    """
+    # Add data directory to path to import cpws module
+    project_root = Path(__file__).parent.parent
+    data_dir = project_root / 'data'
+    sys.path.insert(0, str(data_dir))
+    
+    import cpws
+    baseline_data = {
+        'baseline_pharmacists': cpws.baseline_pharmacists,
+        'baseline_technicians': cpws.baseline_technicians
+    }
+    return baseline_data
+
+
+def get_baseline(source='cpws', data_dir=None):
+    """
+    Get baseline workforce data per profession.
+    
+    Retrieves baseline values from either CPWS (default) or GPhC data source.
+    Returns baseline values in a consistent format per profession.
+    
+    Args:
+        source: Data source selection - 'cpws' (default) or 'gphc'
+        data_dir: Optional data directory path for GPhC CSV (only used if source='gphc')
+    
+    Returns:
+        dict: Baseline data by profession with keys:
+            - 'Pharmacist': baseline value
+            - 'Pharmacy Technician': baseline value
+    
+    Raises:
+        ValueError: If source is not 'cpws' or 'gphc'
+    """
+    # Select baseline data source
+    if source.lower() == 'cpws':
+        baseline_dict = get_baseline_from_cpws()
+    elif source.lower() == 'gphc':
+        baseline_dict = get_baseline_from_gphc(data_dir)
+    else:
+        raise ValueError(f"Invalid source '{source}'. Must be 'cpws' or 'gphc'")
+    
+    # Map to profession names used in the data
+    baseline_data = {}
+    if 'baseline_pharmacists' in baseline_dict:
+        baseline_data['Pharmacist'] = baseline_dict['baseline_pharmacists']
+    if 'baseline_technicians' in baseline_dict:
+        baseline_data['Pharmacy Technician'] = baseline_dict['baseline_technicians']
+    
+    return baseline_data
+
+
 def calculate_annual_growth_rates(total_df):
     """
     Calculate Compound Annual Growth Rate (CAGR) from yearly snapshot data (2018 to 2025).
@@ -162,7 +255,6 @@ def calculate_annual_growth_rates(total_df):
     
     Returns:
         dict: Growth rate data by profession with keys:
-            - baseline_total: Registrants at baseline year (March 2025 snapshot)
             - annual_growth_rate_pct: CAGR percentage (7-year average annual growth rate)
             - annual_change_estimate: Estimated annual absolute change
             - change_period: Total change over the 7-year period
@@ -231,7 +323,6 @@ def calculate_annual_growth_rates(total_df):
         annual_change_estimate = change_period / years_elapsed
         
         data[profession] = {
-            'baseline_total': baseline_total,
             'annual_growth_rate_pct': round(annual_growth_rate_pct, 2),
             'annual_change_estimate': round(annual_change_estimate, 1),
             'change_period': change_period,
@@ -279,43 +370,3 @@ def create_scenarios(rates_dict):
         'optimistic': 1.2,     # Plus 20% (higher growth)
         'pessimistic': 0.8     # Minus 20% (lower growth)
     }
-
-
-def validate_registrants_data(df):
-    """
-    Validate registrants dataframe for required columns and data quality.
-    
-    Args:
-        df: DataFrame to validate
-    
-    Returns:
-        tuple: (is_valid, error_messages)
-    """
-    errors = []
-    required_columns = ['profession', 'registrants', 'month', 'year']
-    
-    # Check required columns
-    missing_columns = [col for col in required_columns if col not in df.columns]
-    if missing_columns:
-        errors.append(f"Missing required columns: {', '.join(missing_columns)}")
-    
-    # Check for null values in required columns
-    for col in required_columns:
-        if col in df.columns and df[col].isnull().any():
-            null_count = df[col].isnull().sum()
-            errors.append(f"Column '{col}' has {null_count} null values")
-    
-    # Check for negative registrants
-    if 'registrants' in df.columns:
-        if (df['registrants'] < 0).any():
-            errors.append("Found negative values in 'registrants' column")
-    
-    # Check month and year ranges
-    if 'month' in df.columns:
-        invalid_months = df[(df['month'] < 1) | (df['month'] > 12)]
-        if not invalid_months.empty:
-            errors.append(f"Found {len(invalid_months)} rows with invalid month values")
-    
-    is_valid = len(errors) == 0
-    return is_valid, errors
-

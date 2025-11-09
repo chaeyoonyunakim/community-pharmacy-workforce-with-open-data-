@@ -22,7 +22,7 @@ from project_workforce import (
     project_workforce,
     format_projections
 )
-from input_data import calculate_annual_growth_rates
+from input_data import calculate_annual_growth_rates, get_baseline
 from utils import calendar_to_financial_year
 
 
@@ -37,14 +37,17 @@ def create_visualizations(output_dir=None):
     output_dir.mkdir(parents=True, exist_ok=True)
     
     # Generate projections data
+    print("Getting baseline data (CPWS)...")
+    baseline = get_baseline(source='cpws')
+    
     print("Loading registration data...")
     total_df = load_registration_data()
     
     print("Calculating annual growth rates...")
-    rates = calculate_annual_growth_rates(total_df)
+    growth_rates = calculate_annual_growth_rates(total_df)
     
     print(f"Creating {DURATION}-year projections...")
-    projections = project_workforce(rates)
+    projections = project_workforce(baseline, growth_rates)
     
     print("Formatting projections...")
     projections_df = format_projections(projections)

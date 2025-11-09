@@ -6,14 +6,12 @@ for Pharmacist and Pharmacy Technician professions based on actual registration 
 for England only.
 """
 
-import pandas as pd
-from config import (
-    DURATION, START_PROJECTION_YEAR
-)
+import config
 from input_data import (
     load_registrants_data,
     calculate_annual_growth_rates,
-    create_scenarios
+    create_scenarios,
+    get_baseline
 )
 from utils import add_financial_year_column
 
@@ -23,25 +21,32 @@ def load_registration_data(data_dir=None):
     return load_registrants_data(data_dir)
 
 
-def project_workforce(rates, duration=DURATION):
+def project_workforce(baseline, growth_rates, duration=config.DURATION):
     """
-    Project workforce over specified years based on Compound Annual Growth Rate (CAGR).
+    Project workforce over specified years based on baseline and Compound Annual Growth Rate (CAGR).
     
-    Uses the calculated CAGR (average annual growth rate) to project future workforce
-    numbers. The CAGR is applied annually with compounding effects.
+    Uses the provided baseline values and calculated CAGR (average annual growth rate) to project
+    future workforce numbers. The CAGR is applied annually with compounding effects.
     
     Args:
-        rates: Dictionary from calculate_annual_growth_rates() with CAGR data
-        duration: Number of years to project (default: DURATION from config)
+        baseline: Dictionary from get_baseline() with baseline values per profession
+        growth_rates: Dictionary from calculate_annual_growth_rates() with CAGR data per profession
+        duration: Number of years to project (default: config.DURATION)
     
     Returns:
         dict: Projections by profession and scenario
     """
-    scenarios = create_scenarios(rates)
+    scenarios = create_scenarios(growth_rates)
     
     projections = {}
     
-    for profession, rate_data in rates.items():
+    for profession in growth_rates.keys():
+        if profession not in baseline:
+            print(f"Warning: No baseline data for {profession}. Skipping projections.")
+            continue
+        
+        rate_data = growth_rates[profession]
+        baseline_total = baseline[profession]
         projections[profession] = {}
         
         for scenario_name, adjustment in scenarios.items():
@@ -49,13 +54,13 @@ def project_workforce(rates, duration=DURATION):
             adjusted_growth_rate = rate_data['annual_growth_rate_pct'] * adjustment
             
             # Project year by year starting from baseline period (baseline_year = current_year)
-            current_total = rate_data['baseline_total']
+            current_total = baseline_total
             projection = []
             
             for year in range(duration + 1):
                 if year == 0:
                     projection.append({
-                        'year': START_PROJECTION_YEAR + year,
+                        'year': config.START_PROJECTION_YEAR + year,
                         'total': current_total,
                         'change': 0,
                         'scenario': scenario_name
@@ -66,7 +71,7 @@ def project_workforce(rates, duration=DURATION):
                     change = round(current_total * (adjusted_growth_rate / 100), 5)
                     current_total = round(current_total + change, 5)
                     projection.append({
-                        'year': START_PROJECTION_YEAR + year,
+                        'year': config.START_PROJECTION_YEAR + year,
                         'total': current_total,
                         'change': change,
                         'scenario': scenario_name
@@ -97,7 +102,7 @@ def format_projections(projections):
                     'scenario': scenario_name
                 })
         
-        df = pd.DataFrame(rows)
+        df = config.pd.DataFrame(rows)
         # Add financial year column
         df = add_financial_year_column(df)
         formatted[profession] = df
