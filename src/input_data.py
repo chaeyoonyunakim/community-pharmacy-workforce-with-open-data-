@@ -50,18 +50,27 @@ def load_registrants_data(data_dir=None, filename='gphc-total-number-of-pharmacy
     """
     Load and preprocess the total number of pharmacy registrants data.
     
+    Filters data to England only (country='England') to focus on England-specific
+    workforce projections for NHS planning purposes.
+    
     Args:
         data_dir: Optional data directory path. If None, uses default project structure.
         filename: Name of the CSV file to load
     
     Returns:
-        pd.DataFrame: Preprocessed dataframe with registrants data
+        pd.DataFrame: Preprocessed dataframe with registrants data for England only
     """
     data_dir = get_data_dir(data_dir)
     file_path = data_dir / filename
     
     # Load CSV
     df = load_csv(file_path)
+    
+    # Filter for England data only if country column exists
+    if 'country' in df.columns:
+        df = df[df['country'] == 'England'].copy()
+        if df.empty:
+            raise ValueError("No England data found in the CSV file. Please ensure country='England' rows exist.")
     
     # Preprocess registrants column (handle commas, quotes, etc.)
     df['registrants'] = preprocess_numeric_column(df, 'registrants').astype(int)

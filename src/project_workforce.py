@@ -2,7 +2,8 @@
 Workforce Projection Module
 
 Provides functions for calculating growth rates and projecting workforce changes
-for Pharmacist and Pharmacy professions based on actual registration data.
+for Pharmacist and Pharmacy Technician professions based on actual registration data
+for England only.
 """
 
 import pandas as pd

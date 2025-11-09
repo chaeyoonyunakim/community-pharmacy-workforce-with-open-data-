@@ -1,8 +1,8 @@
 """
 Main entry point for workforce projection script.
 
-Projects workforce changes for Pharmacist and Pharmacy professions
-based on actual registration data (total registrants over time).
+Projects workforce changes for Pharmacist and Pharmacy Technician professions
+based on actual registration data for England (total registrants over time).
 
 Usage:
     python main.py

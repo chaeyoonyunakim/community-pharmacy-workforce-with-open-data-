@@ -64,7 +64,7 @@ def create_visualizations(output_dir=None):
     fig, axes = plt.subplots(num_professions, 1, figsize=(12, 6 * num_professions))
     if num_professions == 1:
         axes = [axes]  # Make it iterable if only one profession
-    fig.suptitle(f'{PROJECTION_YEARS}-Year Workforce Projection ({start_fy} to {end_fy})', 
+    fig.suptitle(f'{PROJECTION_YEARS}-Year Workforce Projection - England ({start_fy} to {end_fy})', 
                  fontsize=16, fontweight='bold')
     
     scenarios = ['baseline', 'optimistic', 'pessimistic']
@@ -81,7 +81,7 @@ def create_visualizations(output_dir=None):
                     color=colors[scenario], linewidth=2, markersize=4)
         
         # Set x-axis labels to financial years
-        ax.set_title(f'{profession} Workforce Projection', fontsize=12, fontweight='bold')
+        ax.set_title(f'{profession} Workforce Projection - England', fontsize=12, fontweight='bold')
         ax.set_xlabel('Financial Year')
         ax.set_ylabel('Number of Registrants')
         ax.legend()
@@ -115,7 +115,7 @@ def create_visualizations(output_dir=None):
             ax.plot(data['year'], data['total_registrants'], 
                    marker='o', label=label, linewidth=2, markersize=3, linestyle=linestyle)
     
-    ax.set_title(f'{PROJECTION_YEARS}-Year Workforce Projection: All Professions and Scenarios ({start_fy} to {end_fy})', 
+    ax.set_title(f'{PROJECTION_YEARS}-Year Workforce Projection - England: All Professions and Scenarios ({start_fy} to {end_fy})', 
                  fontsize=14, fontweight='bold')
     ax.set_xlabel('Financial Year')
     ax.set_ylabel('Number of Registrants')
