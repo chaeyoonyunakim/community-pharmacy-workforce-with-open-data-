@@ -34,6 +34,13 @@ community-pharmacy-workforce-with-open-data/
     - **Care setting**: All (Hospital, Community, Primary care, and Pharmacy sector)
     - **Snapshot data**: Annual snapshot data (March) for England from 2018 to 2025
     - **Growth rates**: Compound Annual Growth Rate (CAGR) calculated from 7-year historical data (2018-2025)
+- Pharmacy operation hours: [NHSBSA Consolidated Pharmaceutical List](https://opendata.nhsbsa.net/dataset/consolidated-pharmaceutical-list)
+    - **Data**: Total number of pharmacies and opening hours in England, available by financial year quarter (e.g., 2025/26 Q1)
+    - **Care setting**: All NHS pharmacies, appliance contractors, and Local Pharmaceutical Services (LPS) contractors
+    - **Example output (2025/26 Q1)**: 
+        - Total number of pharmacies: 10,525
+        - Total pharmacy operation hours (weekly): 546,264.13 hours
+        - Average weekly hours per pharmacy: 51.92 hours
 
 ### Example Output
 

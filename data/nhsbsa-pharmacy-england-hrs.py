@@ -260,11 +260,12 @@ df_with_hours = transformer.calculate_weekly_hours(df)
 
 # Calculate total operation hours across all pharmacies
 if 'weekly_hours' in df_with_hours.columns:
+    total_pharmacies = len(df_with_hours)
     total_weekly_hours = df_with_hours['weekly_hours'].sum()
     average_weekly_hours = df_with_hours['weekly_hours'].mean()
     
-    print(f"\nTotal pharmacy operation hours (weekly) in {financial_year}: {total_weekly_hours:,.2f} hours")
+    print(f"\nTotal number of pharmacies in {financial_year}: {total_pharmacies:,}")
+    print(f"Total pharmacy operation hours (weekly) in {financial_year}: {total_weekly_hours:,.2f} hours")
     print(f"Average weekly hours per pharmacy: {average_weekly_hours:.2f} hours")
-    print(f"Total annual operation hours (52 weeks): {total_weekly_hours * 52:,.2f} hours")
 else:
     print("Warning: Could not calculate weekly hours. Opening hours columns may not be present in the dataset.")

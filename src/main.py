@@ -5,51 +5,82 @@ Projects workforce changes for Pharmacist and Pharmacy Technician professions
 based on actual registration data for England (total registrants over time).
 
 Usage:
-    python main.py
+    python main.py [scenario]
+    
+    scenario: Optional. One of 'baseline', 'optimistic', or 'pessimistic'. 
+              Default is 'baseline'.
 """
 
 import config
-from project_workforce import (
-    load_registration_data,
-    calculate_annual_growth_rates,
+import sys
+from input_data import (
     get_baseline,
-    project_workforce,
+    load_registrants_data,
+    calculate_annual_growth_rates,
+    calculate_workforce_ops_fte
+)
+from project_workforce import (
+    project_workforce_supply,
+    project_pharmacy_ops,
     format_projections
 )
 from visualize_projections import create_visualizations
 
 
-def main():
-    """Main execution function."""
+def main(scenario='baseline'):
+    """Main execution function.
+    
+    Args:
+        scenario: Scenario to display ('baseline', 'optimistic', or 'pessimistic'). Default is 'baseline'.
+    
+    Returns:
+        pd.DataFrame: Gap analysis DataFrame with columns: financial_year, scenario, supply, ops, gap
+    """
+    # Validate scenario
+    valid_scenarios = ['baseline', 'optimistic', 'pessimistic']
+    if scenario not in valid_scenarios:
+        raise ValueError(f"Scenario must be one of {valid_scenarios}, got '{scenario}'")
+    
     # Get CPWS data
     baseline = get_baseline(source='cpws')
     
     # Calculate growth rates from GPhC historical data
-    total_df = load_registration_data()
+    total_df = load_registrants_data()
     growth_rates = calculate_annual_growth_rates(total_df)
     
-    print("\n" + "="*60)
-    print("Baseline and Annual Growth Rates (CAGR)")
-    print("="*60)
-    print(f"Growth Rate Calculation Period: {list(growth_rates.values())[0]['years_elapsed']} year(s) (2018-2025)")
-    print(f"Projection Period: {config.DURATION} years")
-    print("Note: Annual Growth Rate = Compound Annual Growth Rate (CAGR)")
-    print()
-    for profession in growth_rates.keys():
-        if profession in baseline:
-            print(f"{profession}:")
-            print(f"  Baseline: {baseline[profession]:,}")
-            print(f"  CAGR (Average Annual Growth Rate): {growth_rates[profession]['annual_growth_rate_pct']:.2f}%")
-            print(f"  Annual Change Estimate: {growth_rates[profession]['annual_change_estimate']:,.0f} registrants/year")
-    print("="*60 + "\n")
+    # Calculate pharmacy operations baseline (from NHSBSA data)
+    # Values from 2025/26 Q1: average_weekly_hours=51.92, total_pharmacies=10525
+    average_weekly_hours = 51.92
+    total_pharmacies = 10525
+    ops_baseline_result = calculate_workforce_ops_fte(average_weekly_hours, total_pharmacies)
+    baseline_ops_fte = ops_baseline_result['workforce_ops_fte']
     
-    print(f"Creating {config.DURATION}-year projections...")
-    projections = project_workforce(baseline, growth_rates)
-    projections_df = format_projections(projections)
+    # Project supply
+    supply_projections = project_workforce_supply(baseline, growth_rates)
     
-    print("\n✅ Projection complete!")
-    create_visualizations(projections_df, baseline_source='cpws')
+    # Project ops
+    ops_projections = project_pharmacy_ops(baseline_ops_fte)
+    ops_projections_df = format_projections(ops_projections)
+    
+    # Format supply projections and calculate gap analysis
+    gap_analysis_df = format_projections(supply_projections, ops_projections_df)
+    
+    # Filter to selected scenario
+    scenario_df = gap_analysis_df[gap_analysis_df['scenario'] == scenario].copy()
+    
+    # Create visualizations (only for selected scenario)
+    create_visualizations(scenario_df, baseline_source='cpws')
+    
+    # Print filtered results
+    print(scenario_df)
+    
+    return scenario_df
 
 if __name__ == '__main__':
-    main()
+    # Allow scenario selection via command-line argument
+    scenario = 'baseline'  # default
+    if len(sys.argv) > 1:
+        scenario = sys.argv[1].lower()
+    
+    main(scenario=scenario)
 
