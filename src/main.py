@@ -23,15 +23,16 @@ def main():
     rates = calculate_annual_growth_rates(total_df)
     
     print("\n" + "="*60)
-    print("Baseline and Annual Growth Rates")
+    print("Baseline and Annual Growth Rates (CAGR)")
     print("="*60)
     print(f"Growth Rate Calculation Period: {list(rates.values())[0]['years_elapsed']} year(s) (2018-2025)")
     print(f"Projection Period: {PROJECTION_YEARS} years")
+    print("Note: Annual Growth Rate = Compound Annual Growth Rate (CAGR)")
     print()
     for profession, rate_data in rates.items():
         print(f"{profession}:")
         print(f"  Baseline (March {BASELINE_YEAR}): {rate_data['baseline_total']:,} registrants")
-        print(f"  Annual Growth Rate: {rate_data['annual_growth_rate_pct']:.2f}%")
+        print(f"  CAGR (Average Annual Growth Rate): {rate_data['annual_growth_rate_pct']:.2f}%")
         print(f"  Annual Change Estimate: {rate_data['annual_change_estimate']:,.0f} registrants/year")
     print("="*60 + "\n")
     

@@ -25,10 +25,13 @@ def load_registration_data(data_dir=None):
 
 def project_workforce(rates, years=None, scenarios=None):
     """
-    Project workforce over specified years based on annual growth rates.
+    Project workforce over specified years based on Compound Annual Growth Rate (CAGR).
+    
+    Uses the calculated CAGR (average annual growth rate) to project future workforce
+    numbers. The CAGR is applied annually with compounding effects.
     
     Args:
-        rates: Dictionary from calculate_annual_growth_rates() with growth rate data
+        rates: Dictionary from calculate_annual_growth_rates() with CAGR data
         years: Number of years to project (default: from config)
         scenarios: dict with scenario names and rate adjustments (default: calculated from rates)
                   e.g., {'baseline': 1.0, 'optimistic': 1.2, 'pessimistic': 0.8}

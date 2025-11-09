@@ -147,12 +147,13 @@ def load_leavers_data(data_dir=None, filename='gphc-registrants-leavers.csv'):
 
 def calculate_annual_growth_rates(total_df):
     """
-    Calculate average annual growth rates from yearly snapshot data (2018 to 2025).
+    Calculate Compound Annual Growth Rate (CAGR) from yearly snapshot data (2018 to 2025).
     
-    Uses all available historical snapshot data to calculate a 7-year average
-    Compound Annual Growth Rate (CAGR) from the earliest available year (2018)
-    to the baseline year (2025). This provides a stable, long-term growth rate
-    for workforce projections.
+    Calculates the 7-year Compound Annual Growth Rate (CAGR) from the earliest
+    available year (2018) to the baseline year (2025). CAGR represents the
+    average annual growth rate over the period, accounting for compounding effects.
+    
+    Note: Average growth rate = CAGR (Compound Annual Growth Rate)
     
     Formula: CAGR = ((End/Start)^(1/Years) - 1) * 100
     
@@ -162,7 +163,7 @@ def calculate_annual_growth_rates(total_df):
     Returns:
         dict: Growth rate data by profession with keys:
             - baseline_total: Registrants at baseline year (March 2025 snapshot)
-            - annual_growth_rate_pct: Average annual growth rate percentage (7-year CAGR)
+            - annual_growth_rate_pct: CAGR percentage (7-year average annual growth rate)
             - annual_change_estimate: Estimated annual absolute change
             - change_period: Total change over the 7-year period
             - years_elapsed: Number of years used for calculation (7 years: 2018-2025)
