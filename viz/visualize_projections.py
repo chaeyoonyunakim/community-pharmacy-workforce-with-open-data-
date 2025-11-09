@@ -16,13 +16,13 @@ project_root = script_dir.parent
 src_dir = project_root / 'src'
 sys.path.insert(0, str(src_dir))
 
-from config import PROJECTION_YEARS, START_PROJECTION_YEAR
+from config import DURATION, START_PROJECTION_YEAR
 from project_workforce import (
     load_registration_data,
-    calculate_annual_growth_rates,
     project_workforce,
     format_projections
 )
+from input_data import calculate_annual_growth_rates
 from utils import calendar_to_financial_year
 
 
@@ -43,8 +43,8 @@ def create_visualizations(output_dir=None):
     print("Calculating annual growth rates...")
     rates = calculate_annual_growth_rates(total_df)
     
-    print(f"Creating {PROJECTION_YEARS}-year projections...")
-    projections = project_workforce(rates, years=PROJECTION_YEARS)
+    print(f"Creating {DURATION}-year projections...")
+    projections = project_workforce(rates)
     
     print("Formatting projections...")
     projections_df = format_projections(projections)
@@ -58,13 +58,13 @@ def create_visualizations(output_dir=None):
     num_professions = len(professions)
     
     # Create figure with subplots (one per profession)
-    end_year = START_PROJECTION_YEAR + PROJECTION_YEARS
+    end_year = START_PROJECTION_YEAR + DURATION
     start_fy = calendar_to_financial_year(START_PROJECTION_YEAR)
     end_fy = calendar_to_financial_year(end_year)
     fig, axes = plt.subplots(num_professions, 1, figsize=(12, 6 * num_professions))
     if num_professions == 1:
         axes = [axes]  # Make it iterable if only one profession
-    fig.suptitle(f'{PROJECTION_YEARS}-Year Workforce Projection ({start_fy} to {end_fy})', 
+    fig.suptitle(f'{DURATION}-Year Workforce Projection - England ({start_fy} to {end_fy})', 
                  fontsize=16, fontweight='bold')
     
     scenarios = ['baseline', 'optimistic', 'pessimistic']
@@ -81,7 +81,7 @@ def create_visualizations(output_dir=None):
                     color=colors[scenario], linewidth=2, markersize=4)
         
         # Set x-axis labels to financial years
-        ax.set_title(f'{profession} Workforce Projection', fontsize=12, fontweight='bold')
+        ax.set_title(f'{profession} Workforce Projection - England', fontsize=12, fontweight='bold')
         ax.set_xlabel('Financial Year')
         ax.set_ylabel('Number of Registrants')
         ax.legend()
@@ -115,7 +115,7 @@ def create_visualizations(output_dir=None):
             ax.plot(data['year'], data['total_registrants'], 
                    marker='o', label=label, linewidth=2, markersize=3, linestyle=linestyle)
     
-    ax.set_title(f'{PROJECTION_YEARS}-Year Workforce Projection: All Professions and Scenarios ({start_fy} to {end_fy})', 
+    ax.set_title(f'{DURATION}-Year Workforce Projection - England: All Professions and Scenarios ({start_fy} to {end_fy})', 
                  fontsize=14, fontweight='bold')
     ax.set_xlabel('Financial Year')
     ax.set_ylabel('Number of Registrants')

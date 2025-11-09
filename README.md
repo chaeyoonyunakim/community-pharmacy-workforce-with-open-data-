@@ -28,5 +28,6 @@ community-pharmacy-workforce-with-open-data/
 
 ## Data sources
 - [GPhC registers data](https://www.pharmacyregulation.org/about-us/publications-and-insights/research-data-and-insights/gphc-registers-data)
-    - actuals: April 2025 onwards
-    - estimates: For the financial year 2024/25, the registrant counts are derived by applying monthly average rates during the current financial year 2025/26 data on joiners/leavers totals.
+    - **Snapshot data**: Annual snapshot data (March) for England from 2018 to 2025
+    - **Growth rates**: Compound Annual Growth Rate (CAGR) calculated from 7-year historical data (2018-2025)
+    - The model uses the 7-year average annual growth rate (CAGR) to project workforce changes over a 10-year period

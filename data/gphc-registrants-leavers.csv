@@ -1,14 +1,13 @@
-profession,leavers,total_leavers,month,year
-Pharmacist,36,36,04,2025
-Pharmacist,57,93,05,2025
-Pharmacist,50,177,06,2025
-Pharmacist,34,177,07,2025
-Pharmacist,149,395,08,2025
-Pharmacist,116,511,09,2025
-Pharmacy Technician,55,55,04,2025
-Pharmacy Technician,45,100,05,2025
-Pharmacy Technician,51,151,06,2025
-Pharmacy Technician,29,180,07,2025
-Pharmacy Technician,78,279,08,2025
-Pharmacy Technician,93,372,09,2025
-
+profession,leavers,total_leavers,month,year,country
+Pharmacist,36,36,04,2025,All
+Pharmacist,57,93,05,2025,All
+Pharmacist,50,177,06,2025,All
+Pharmacist,34,177,07,2025,All
+Pharmacist,149,395,08,2025,All
+Pharmacist,116,511,09,2025,All
+Pharmacy Technician,55,55,04,2025,All
+Pharmacy Technician,45,100,05,2025,All
+Pharmacy Technician,51,151,06,2025,All
+Pharmacy Technician,29,180,07,2025,All
+Pharmacy Technician,78,279,08,2025,All
+Pharmacy Technician,93,372,09,2025,All
