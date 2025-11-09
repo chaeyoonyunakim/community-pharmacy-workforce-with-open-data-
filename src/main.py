@@ -14,7 +14,7 @@ Usage:
 import config
 import sys
 from input_data import (
-    get_baseline,
+    get_baseline_supply,
     load_registrants_data,
     calculate_annual_growth_rates,
     calculate_workforce_ops_fte
@@ -42,7 +42,7 @@ def main(scenario='baseline'):
         raise ValueError(f"Scenario must be one of {valid_scenarios}, got '{scenario}'")
     
     # Get CPWS data
-    baseline = get_baseline(source='cpws')
+    baseline = get_baseline_supply(source='cpws')
     
     # Calculate growth rates from GPhC historical data
     total_df = load_registrants_data()
@@ -52,8 +52,7 @@ def main(scenario='baseline'):
     # Values from 2025/26 Q1: average_weekly_hours=51.92, total_pharmacies=10525
     average_weekly_hours = 51.92
     total_pharmacies = 10525
-    ops_baseline_result = calculate_workforce_ops_fte(average_weekly_hours, total_pharmacies)
-    baseline_ops_fte = ops_baseline_result['workforce_ops_fte']
+    baseline_ops_fte = calculate_workforce_ops_fte(average_weekly_hours, total_pharmacies)
     
     # Project supply
     supply_projections = project_workforce_supply(baseline, growth_rates)

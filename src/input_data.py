@@ -202,7 +202,7 @@ def get_baseline_from_cpws():
     return baseline_data
 
 
-def get_baseline(source='cpws', data_dir=None):
+def get_baseline_supply(source='cpws', data_dir=None):
     """
     Get baseline workforce data per profession.
     
@@ -230,13 +230,13 @@ def get_baseline(source='cpws', data_dir=None):
         raise ValueError(f"Invalid source '{source}'. Must be 'cpws' or 'gphc'")
     
     # Map to profession names used in the data
-    baseline_data = {}
+    baseline_supply = {}
     if 'baseline_pharmacists' in baseline_dict:
-        baseline_data['Pharmacist'] = baseline_dict['baseline_pharmacists']
+        baseline_supply['Pharmacist'] = baseline_dict['baseline_pharmacists']
     if 'baseline_technicians' in baseline_dict:
-        baseline_data['Pharmacy Technician'] = baseline_dict['baseline_technicians']
+        baseline_supply['Pharmacy Technician'] = baseline_dict['baseline_technicians']
     
-    return baseline_data
+    return baseline_supply
 
 
 def calculate_annual_growth_rates(total_df):
@@ -407,47 +407,33 @@ def calculate_workforce_ops_fte(average_weekly_hours, total_pharmacies,
     # Calculate total workforce operation FTE across all pharmacies
     workforce_ops_fte = fte_per_pharmacy * total_pharmacies
     
-    return {
-        'fte_per_pharmacy': round(fte_per_pharmacy, 4),
-        'workforce_ops_fte': round(workforce_ops_fte, 2)
-    }
+    return workforce_ops_fte
 
 
-def gap_analysis(average_weekly_hours, total_pharmacies, baseline_total_fte, 
-                                        fte_weekly_hours=config.FTE_WEEKLY_HOURS, 
-                                        utilisation_rate=config.UTILISATION_RATE):
+def gap_analysis(baseline_ops_fte, baseline_total_fte):
     """
     Analyse the gap between workforce supply and operations.
     
     Compares the current workforce supply (baseline FTE from surveys) against the
-    workforce required for operations calculated from pharmacy operation hours. This analysis helps
+    workforce required for operations (baseline ops FTE). This analysis helps
     identify whether there is a surplus or deficit in the workforce.
     
     Supply = Baseline total FTE (current workforce available)
-    Ops = Workforce operation FTE (FTE needed to cover operation hours)
+    Ops = Baseline workforce operation FTE (FTE needed to cover operation hours)
     Gap = Supply - Ops (positive = surplus, negative = deficit)
     
     Args:
-        average_weekly_hours: Average weekly operation hours per pharmacy (from NHSBSA data)
-        total_pharmacies: Total number of pharmacies (from NHSBSA data)
+        baseline_ops_fte: Baseline workforce operation FTE (from calculate_workforce_ops_fte)
         baseline_total_fte: Baseline total FTE from workforce survey (e.g., CPWS) - represents supply
-        fte_weekly_hours: Standard FTE working hours per week (default: config.FTE_WEEKLY_HOURS)
-        utilisation_rate: Workforce utilisation rate (default: config.UTILISATION_RATE)
     
     Returns:
         pd.DataFrame: DataFrame with columns 'supply', 'ops', and 'gap' for baseline
     """
-    # Calculate FTE per pharmacy and total workforce operation FTE
-    ops_result = calculate_workforce_ops_fte(
-        average_weekly_hours,
-        total_pharmacies,
-        fte_weekly_hours,
-        utilisation_rate
-    )
-    workforce_ops_fte = ops_result['workforce_ops_fte']
-    
     # Workforce supply is the baseline total FTE
     workforce_supply_fte = baseline_total_fte
+    
+    # Workforce ops is the baseline ops FTE
+    workforce_ops_fte = baseline_ops_fte
     
     # Calculate gap (supply - ops)
     gap_fte = workforce_supply_fte - workforce_ops_fte

@@ -10,8 +10,7 @@ import config
 from input_data import (
     load_registrants_data,
     calculate_annual_growth_rates,
-    create_scenarios,
-    get_baseline
+    create_scenarios
 )
 from utils import add_financial_year_column
 
@@ -74,7 +73,7 @@ def project_workforce_supply(baseline, growth_rates, duration=config.DURATION):
     future workforce numbers. The CAGR is applied annually with compounding effects.
     
     Args:
-        baseline: Dictionary from get_baseline() with baseline values per profession
+        baseline: Dictionary from get_baseline_supply() with baseline values per profession
         growth_rates: Dictionary from calculate_annual_growth_rates() with CAGR data per profession
         duration: Number of years to project (default: config.DURATION)
     
