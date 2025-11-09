@@ -62,22 +62,28 @@ The model generates workforce projections and gap analysis visualizations:
 
 ![Workforce Projection Chart](workforce_projection_chart.png)
 
-The visualization shows 10-year supply vs operations projections with gap analysis for the selected scenario. The chart displays:
-- **Supply (Total FTE)**: Combined workforce supply (Pharmacist + Pharmacy Technician) as a line
-- **Operations (FTE)**: Workforce required for pharmacy operations as a line
-- **Gap (Supply - Ops)**: Difference between supply and operations as bars (positive = surplus, negative = deficit)
+The visualization shows 10-year supply vs operations projections with gap analysis for the selected scenario using a dual y-axis chart:
+- **Left y-axis**: 
+  - **Supply (Total FTE)**: Combined workforce supply (Pharmacist + Pharmacy Technician) as a line
+  - **Operations (FTE)**: Workforce required for pharmacy operations as a line
+- **Right y-axis**:
+  - **Gap (Supply - Ops)**: Difference between supply and operations as bars (positive = surplus, negative = deficit)
 
 ```
     year financial_year  scenario  supply    ops    gap
-0   2025        2025/26  baseline   23218  16914   6304
-1   2026        2026/27  baseline   23834  16931   6903
-2   2027        2027/28  baseline   24465  16948   7517
-3   2028        2028/29  baseline   25114  16965   8149
-4   2029        2029/30  baseline   25781  16982   8799
-5   2030        2030/31  baseline   26466  16999   9467
-6   2031        2031/32  baseline   27169  17016  10153
-7   2032        2032/33  baseline   27892  17033  10859
-8   2033        2033/34  baseline   28633  17050  11583
-9   2034        2034/35  baseline   29395  17067  12328
-10  2035        2035/36  baseline   30176  17084  13092
+0   2025        2025/26  baseline   23218  18009   5209
+1   2026        2026/27  baseline   23834  18729   5105
+2   2027        2027/28  baseline   24465  19478   4987
+3   2028        2028/29  baseline   25114  20257   4857
+4   2029        2029/30  baseline   25781  21067   4714
+5   2030        2030/31  baseline   26466  21910   4556
+6   2031        2031/32  baseline   27169  22786   4383
+7   2032        2032/33  baseline   27892  23698   4194
+8   2033        2033/34  baseline   28633  24646   3987
+9   2034        2034/35  baseline   29395  25632   3763
+10  2035        2035/36  baseline   30176  26658   3518
 ```
+
+**Note**: The output values reflect:
+- Updated workforce utilisation rate (accounts for 28 days training/sick leave)
+- Pharmacy operations growth rate of 4% per year
