@@ -1,14 +1,13 @@
-profession,joiners,total_joiners,month,year
-Pharmacist,55,55,04,2025
-Pharmacist,24,79,05,2025
-Pharmacist,31,157,06,2025
-Pharmacist,29,139,07,2025
-Pharmacist,1177,1316,08,2025
-Pharmacist,747,2063,09,2025
+profession,joiners,total_joiners,month,year,country
+Pharmacist,55,55,04,2025,All
+Pharmacist,24,79,05,2025,All
+Pharmacist,31,157,06,2025,All
+Pharmacist,29,139,07,2025,All
+Pharmacist,1177,1316,08,2025,All
+Pharmacist,747,2063,09,2025,All
 Pharmacy Technician,186,186,04,2025
-Pharmacy Technician,125,311,05,2025
-Pharmacy Technician,157,468,06,2025
-Pharmacy Technician,127,595,07,2025
-Pharmacy Technician,130,725,08,2025
-Pharmacy Technician,202,927,09,2025
-
+Pharmacy Technician,125,311,05,2025,All
+Pharmacy Technician,157,468,06,2025,All
+Pharmacy Technician,127,595,07,2025,All
+Pharmacy Technician,130,725,08,2025,All
+Pharmacy Technician,202,927,09,2025,All
