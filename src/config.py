@@ -23,8 +23,8 @@ DURATION = 10  # Number of years to project forward
 START_PROJECTION_YEAR = 2025  # Year to start projections from
 
 # Workforce utilisation rate
-# Accounts for time off per FTE: 27 days annual leave + 8 days bank holidays + 15 days training/sick leave
-UTILISATION_RATE = 0.8077
+# Accounts for time off per FTE: 27 days annual leave + 8 days bank holidays + 28 days training/sick leave
+UTILISATION_RATE = 0.7586
 
 # Standard FTE working hours per week
 FTE_WEEKLY_HOURS = 40
